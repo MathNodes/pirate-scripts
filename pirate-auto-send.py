@@ -6,6 +6,7 @@ import requests
 API_URL = "https://api.test.me/v1/pirate/getbalances"
 EXCLUDED_ADDRESS = ""
 TO_ADDRESS = ""
+GENERAL_FUND_WALLET = "zs1ymgqg9dnt20q3y6lk8za2a7cq53evmqwy4lvnfruq5z4z9g3tj8znejw28e39r64yakgvcgurv2"
 FEE = 0.0005
 CLI = '/sdc/pirate/pirate-cli'
 CONF = '/sdc/pirate/.komodo/PIRATE/PIRATE.conf'
@@ -21,13 +22,18 @@ def fetch_balances():
         return []
 
 def build_and_run_command(from_addr, amount_to_send):
+    gf_tax = round(float(amount_to_send*0.05),8)
     command = (
-        f'{CLI} -conf={CONF} '
+        f'/sdc/pirate/pirate-cli -conf=/sdc/pirate/.komodo/PIRATE/PIRATE.conf '
         f'z_sendmany "{from_addr}" '
-        f"'[{{\"address\": \"{TO_ADDRESS}\", \"amount\": {amount_to_send:.8f}}}]' "
+        f"'[{{\"address\": \"{TO_ADDRESS}\", \"amount\": {amount_to_send:.8f}}},"
+        f"{{\"address\": \"{GENERAL_FUND_WALLET}\", \"amount\": {gf_tax:.8f}}}]' "
         f'1 '
         f'{FEE:.8f}'
     )
+
+
+
 
     print("\nRunning command:")
     print(command)
